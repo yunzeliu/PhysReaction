@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="PhysReaction: Physically Plausible Real-Time Humanoid Reaction Synthesis via Forward Dynamics Guided 4D Imitation">
+    <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PhysReaction: Physically Plausible Real-Time Humanoid Reaction Synthesis via Forward Dynamics Guided 4D Imitation</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-PYVRSFMDRL');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+
+
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <h1 class="title is-1 publication-title" style="font-size: 30px;">PhysReaction: Physically Plausible Real-Time Humanoid Reaction Synthesis via Forward Dynamics Guided 4D Imitation</h1>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </section>
+
+
+
+    <div class="content has-text-centered" style="margin-bottom: 1px;">
+
+        <!-- <div style="width: 1px;"></div>  -->
+
+        <img src="./static/images/teaser.png" class="interpolation-image" width="80%" />
+
+    </div>
+
+    <section class="section">
+        <div class="container is-max-desktop">
+            <!-- Abstract. -->
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Abstract</h2>
+                    <div class="content has-text-centered has-text-justified">
+                        <p>
+                            Humanoid Reaction Synthesis is pivotal for creating highly interactive and empathetic robots that can seamlessly integrate into human environments, enhancing the way we live, work, and communicate. However, it is difficult to learn the diverse interaction
+                            patterns of multiple humans and generate physically plausible reactions. The kinematics-based approaches face challenges, including issues like <b>floating feet, sliding, penetration, and other problems that defy physical plausibility</b>.
+                            The existing physics-based method often <b>relies on kinematics-based methods</b> to generate reference states, which <b>struggle with the challenges posed by kinematic noise during action execution</b>. Constrained by their reliance on
+                            diffusion models, these methods are unable to achieve real-time inference. In this work, we propose a Forward Dynamics Guided 4D Imitation method to generate physically plausible human-like reactions. The learned policy is
+                            capable of generating physically plausible and human-like reactions <b>in real-time</b> , significantly improving the <b>speed(x33)</b> and <b>quality</b>of reactions compared with the existing method. Our experiments on the InterHuman and Chi3D
+                            datasets, along with ablation studies, demonstrate the effectiveness of our approach.</p>
+                    </div>
+                </div>
+            </div>
+            <!--/ Abstract. -->
+
+        </div>
+    </section>
+
+
+    <section class="section">
+        <div class="container has-text-centered is-max-desktop">
+            <!--/ Matting. -->
+
+            <!-- Animation. -->
+            <div class="columns is-centered">
+                <div class="column is-full-width">
+                    <h2 class="title is-3">Method</h2>
+
+                    <!-- Interpolating. -->
+                    <h3 class="title is-4">Demonstration Generation</h3>
+                    <div class="content has-text-justified">
+                        <p>
+                            To enhance imitation learning, transforming motion capture data into <b>state-action pairs</b> is crucial. However, deriving precise actions from motion data is typically difficult, necessitating high-precision force sensors or advanced motion-tracking techniques.
+                            Our goal is to generate accurate state-action pairs from sequences of joint positions. To model state-action relationships, it's crucial to associate actions with each state . During the demonstration generation phase, we employ
+                            a <b>universal motion tracker</b> to seamlessly convert motion capture data for use in the simulation environment.
+                        </p>
+
+                        <div class="content has-text-centered" style="margin-bottom: 40px;">
+                          <img src="./static/images/demon.png" class="interpolation-image" alt="demon." />
+                          <div>
+
+                    <!-- <br/> -->
+                    <!--/ Interpolating. -->
+
+                    <!-- Re-rendering. -->
+                    <h3 class="title is-4">Forward Dynamics Model Training</h3>
+                    <div class="content has-text-justified">
+                        <p>
+                            We believe that an effective policy should <b>foresee its actions</b>. After obtaining state-action pairs, we initially train two Variational Autoencoders as feature extractors for both states and actions, termed the <b>state VAE and the action VAE</b>. Following this,
+                            a forward dynamics model is trained to estimate the upcoming state, based on the current state and action. We consider the forward dynamics model to be stochastic rather than deterministic, so we train the model in the feature
+                            space using the contrastive loss.
+                        </p>
+
+                        <div class="content has-text-centered" style="margin-bottom: 40px;">
+                            <img src="./static/images/fdm.png" class="interpolation-image" alt="fdm." />
+                            <div>
+
+                    <h3 class="title is-4">Forward Dynamics Guided 4D Imitation Learning</h3>
+                    <div class="content has-text-justified">
+                        <p>
+                          With the forward dynamics model, we advance to the training phase of <b>4D imitation learning</b>. The term "4D imitation learning" reflects the incorporation of temporal data in our input states and the dynamics network's ability to forecast future states. This approach transcends basic one-to-one mapping, evolving from singular state-action relationships to encompass temporal progression. <b>Utilizing the previous states of both the actor and reactor  along with the actor's current state , our model is tasked with forecasting the action for the reactor to execute.</b> This model anticipates the reactor's next state, leveraging the reactor's preceding state  and the proposed action. After encoding the forecasted action and state through the VAE's encoder, we apply a contrastive loss to facilitate gradient back-propagation.
+
+                        </p>
+
+                        <div class="content has-text-centered" style="margin-bottom: 40px;">
+                            <img src="./static/images/il.png" class="interpolation-image" alt="il." />
+                            <div>
+
+                    <h3 class="title is-4">Iterative Generalist-Specialist Learning Strategy</h3>
+                    <div class="content has-text-justified">
+                        <p>
+                          Given the complexity of imitating a diverse array of tasks with a single network,  we utilize an Iterative Generalist-Specialist Learning Strategy during the imitation learning phase. We begin by <b>clustering dataset motions into ten subsets</b> based on state features from the state encoder. A Generalist model is first trained on the entire dataset, after which this model is duplicated ten times to specialize in each subset, creating ten Specialists. Subsequently, we apply a <b>distillation technique</b> to transfer the knowledge from these Specialists back to the Generalist. This iterative process enhances our policy's ability to handle a broad spectrum of interactive tasks, enabling the generation of different reactions.
+
+                        </p>
+
+                        <div class="content has-text-centered" style="margin-bottom: 40px;">
+                            <img src="./static/images/gs.png" class="interpolation-image" alt="gs." />
+                            <div>
+                    <!--/ Re-rendering. -->
+
+                </div>
+            </div>
+            <!--/ Animation. -->
+
+
+
+
+            <div class="columns has-text-centered is-centered">
+                <div class="column is-full-width">
+                    <h2 class="title is-3">Qualitative Visualizations</h2>
+
+                    <!-- Interpolating. -->
+                    <h3 class="title is-4"> The blue one is the generated reactor. </h3>
+
+                    <div style="margin-bottom: -10px;">
+                      <p> <b>Two people greet each other by shaking hands.</b> 
+                      </p>
+
+                  </div>
+                    <div class="columns is-centered">
+
+                        <!-- Visual Effects. -->
+                        <div class="column">
+                            <div class="content">
+                                <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                                <video id="woshou" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/woshou.mp4"
+                    type="video/mp4">
+          </video>
+                                <p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                    <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                                </p>
+
+                            </div>
+                        </div>
+                        <!--/ Visual Effects. -->
+
+                        <!-- Matting. -->
+                        <div class="column">
+                            <!-- <h2 class="title is-3">Matting</h2> -->
+                            <div class="columns is-centered">
+                                <div class="column content">
+                                    <video id="woshou_" autoplay controls muted loop playsinline height="100%">
+              <source src="./static/videos/woshou_.mp4"
+                      type="video/mp4">
+            </video>
+                                    <p>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp; 
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div style="margin-bottom: -10px;">
+                        <p><b>Both people stand straight, extend their arms up and wave their hands towards each other.</b></p>
+                       
+                    </div>
+
+                    <div class="columns is-centered">
+
+                        <!-- Visual Effects. -->
+                        <div class="column">
+                            <div class="content">
+                                <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                                <video id="dazhaohu" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/dazhaohu.mp4"
+                  type="video/mp4">
+        </video>
+                                   <p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                    <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                                </p>
+                            </div>
+                        </div>
+                        <!--/ Visual Effects. -->
+
+                        <!-- Matting. -->
+                        <div class="column">
+                            <!-- <h2 class="title is-3">Matting</h2> -->
+                            <div class="columns is-centered">
+                                <div class="column content">
+                                    <video id="dazhaohu_" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/dazhaohu_.mp4"
+                    type="video/mp4">
+          </video>
+                                    <p>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp; 
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div style="margin-bottom: -10px;">
+                        <p><b>The first person places the right arm on the shoulder of another person.</b></p>
+                       
+                    </div>
+
+                    <div class="columns is-centered">
+
+                        <!-- Visual Effects. -->
+                        <div class="column">
+                            <div class="content">
+                                <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                                <video id="beidui2" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/beidui2.mp4"
+                  type="video/mp4">
+        </video>
+                                <p>
+                                  &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                    <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                                </p>
+
+                            </div>
+                        </div>
+                        <!--/ Visual Effects. -->
+
+                        <!-- Matting. -->
+                        <div class="column">
+                            <!-- <h2 class="title is-3">Matting</h2> -->
+                            <div class="columns is-centered">
+                                <div class="column content">
+                                    <video id="beidui2_" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/beidui2_.mp4"
+                    type="video/mp4">
+          </video>
+                                    <p>
+                                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                                  </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div style="margin-bottom: -10px;">
+                        <p><b>The first one approaches the second one from behind, gently touches the shoulder of the second one, and starts a conversation with the person.</b></p>
+                    </div>
+
+                    <div class="columns is-centered">
+
+                        <!-- Visual Effects. -->
+                        <div class="column">
+                            <div class="content">
+                                <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                                <video id="beidui" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/beidui.mp4"
+                  type="video/mp4">
+        </video>
+                                <p>
+                                  &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                    <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                                </p>
+
+                            </div>
+                        </div>
+                        <!--/ Visual Effects. -->
+
+                        <!-- Matting. -->
+                        <div class="column">
+                            <!-- <h2 class="title is-3">Matting</h2> -->
+                            <div class="columns is-centered">
+                                <div class="column content">
+                                    <video id="beidui_" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/beidui_.mp4"
+                    type="video/mp4">
+          </video>
+                                  <p>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                                </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div style="margin-bottom: -10px;">
+                      <p><b>One person approaches the other person and the other person raises the right hand, then greets with the left hand, and then they embrace each other.
+                      </b></p>
+                  </div>
+
+                  <div class="columns is-centered">
+
+                      <!-- Visual Effects. -->
+                      <div class="column">
+                          <div class="content">
+                              <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                              <video id="yongbao" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/yongbao.mp4"
+                type="video/mp4">
+      </video>
+                              <p>
+                                &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                  <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                              </p>
+
+                          </div>
+                      </div>
+                      <!--/ Visual Effects. -->
+
+                      <!-- Matting. -->
+                      <div class="column">
+                          <!-- <h2 class="title is-3">Matting</h2> -->
+                          <div class="columns is-centered">
+                              <div class="column content">
+                                  <video id="yongbao_" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/yongbao_.mp4"
+                  type="video/mp4">
+        </video>
+                                <p>
+                                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                              </p>
+                              </div>
+
+                          </div>
+                      </div>
+                  </div>
+
+                  <div style="margin-bottom: -10px;">
+                    <p><b>The other person slaps one side of the first person's face with their right hand and steps back.
+                    </b></p>
+                </div>
+
+                <div class="columns is-centered">
+
+                    <!-- Visual Effects. -->
+                    <div class="column">
+                        <div class="content">
+                            <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                            <video id="dajia" autoplay controls muted loop playsinline height="100%">
+      <source src="./static/videos/dajia.mp4"
+              type="video/mp4">
+    </video>
+                            <p>
+                              &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                                <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                            </p>
+
+                        </div>
+                    </div>
+                    <!--/ Visual Effects. -->
+
+                    <!-- Matting. -->
+                    <div class="column">
+                        <!-- <h2 class="title is-3">Matting</h2> -->
+                        <div class="columns is-centered">
+                            <div class="column content">
+                                <video id="dajia_" autoplay controls muted loop playsinline height="100%">
+        <source src="./static/videos/dajia_.mp4"
+                type="video/mp4">
+      </video>
+                              <p>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                            </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: -10px;">
+                  <p><b>The two persons walk forward side by side.
+                  </b></p>
+              </div>
+
+              <div class="columns is-centered">
+
+                  <!-- Visual Effects. -->
+                  <div class="column">
+                      <div class="content">
+                          <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                          <video id="zoulu" autoplay controls muted loop playsinline height="100%">
+    <source src="./static/videos/zoulu.mp4"
+            type="video/mp4">
+  </video>
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                              <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                          </p>
+
+                      </div>
+                  </div>
+                  <!--/ Visual Effects. -->
+
+                  <!-- Matting. -->
+                  <div class="column">
+                      <!-- <h2 class="title is-3">Matting</h2> -->
+                      <div class="columns is-centered">
+                          <div class="column content">
+                              <video id="zoulu_" autoplay controls muted loop playsinline height="100%">
+      <source src="./static/videos/zoulu_.mp4"
+              type="video/mp4">
+    </video>
+                            <p>
+                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                          </p>
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+ 
+              <div style="margin-bottom: -10px;">
+                <p><b>The first one stomps their foot and claps their thigh, and the second one strikes the first one with their right hand. the first one takes a step back.
+                </b></p>
+            </div>
+
+            <div class="columns is-centered">
+
+                <!-- Visual Effects. -->
+                <div class="column">
+                    <div class="content">
+                        <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                        <video id="huou" autoplay controls muted loop playsinline height="100%">
+  <source src="./static/videos/huou.mp4"
+          type="video/mp4">
+</video>
+                        <p>
+                          &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                            <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                        </p>
+
+                    </div>
+                </div>
+                <!--/ Visual Effects. -->
+
+                <!-- Matting. -->
+                <div class="column">
+                    <!-- <h2 class="title is-3">Matting</h2> -->
+                    <div class="columns is-centered">
+                        <div class="column content">
+                            <video id="huou_" autoplay controls muted loop playsinline height="100%">
+    <source src="./static/videos/huou_.mp4"
+            type="video/mp4">
+  </video>
+                          <p>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                        </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>              
+            <div style="margin-bottom: -10px;">
+              <p><b>One and the other person acknowledge each other's presence and face each other.
+              </b></p>
+          </div>
+
+          <div class="columns is-centered">
+
+              <!-- Visual Effects. -->
+              <div class="column">
+                  <div class="content">
+                      <!-- <h2 class="title is-3">Visual Effects</h2> -->
+                      <video id="luguo" autoplay controls muted loop playsinline height="100%">
+<source src="./static/videos/luguo.mp4"
+        type="video/mp4">
+</video>
+                      <p>
+                        &nbsp;&nbsp;&nbsp;&nbsp; Baseline(
+                          <a rel="license" href="https://github.com/jiawei-ren/insactor">InsActor</a>) &nbsp;&nbsp;
+                      </p>
+
+                  </div>
+              </div>
+              <!--/ Visual Effects. -->
+
+              <!-- Matting. -->
+              <div class="column">
+                  <!-- <h2 class="title is-3">Matting</h2> -->
+                  <div class="columns is-centered">
+                      <div class="column content">
+                          <video id="luguo_" autoplay controls muted loop playsinline height="100%">
+  <source src="./static/videos/luguo_.mp4"
+          type="video/mp4">
+</video>
+                        <p>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ours &nbsp;&nbsp;
+                      </p>
+                      </div>
+
+                  </div>
+              </div>
+          </div>       
+
+
+
+
+
+
+
+
+
+
+    </section>
+
+    
+
+
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                
+                <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <div class="columns is-centered">
+                <div class="column is-8">
+                    <div class="content">
+                        <p>
+                            The template is borrowed from <a rel="license" href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
